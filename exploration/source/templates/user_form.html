@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4 text-center">Add User</h2>
+<form method="post">
+  {{ form.hidden_tag() }}
+  <div class="mb-3">{{ form.username.label }} {{ form.username(class="form-control") }}</div>
+  <div class="mb-3">{{ form.password.label }} {{ form.password(class="form-control") }}</div>
+  {{ form.submit(class="btn btn-primary w-100") }}
+</form>
+{% endblock %} 

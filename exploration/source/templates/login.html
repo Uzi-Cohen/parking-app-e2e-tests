@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>כניסה לחשבון שלי</title>
+  <!-- Bootstrap 5 RTL -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #fff;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .split-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: row;
+    }
+    .brand-section {
+      background: #2476ff;
+      flex: 1 1 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0 2rem;
+    }
+    .brand-logo {
+      font-size: 4rem;
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 1.5rem;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .brand-title {
+      font-size: 2rem;
+      color: #fff;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    .brand-desc {
+      font-size: 1.1rem;
+      color: #f7fafd;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .brand-illustration {
+      width: 80%;
+      max-width: 350px;
+      margin-top: 2rem;
+      opacity: 0.7;
+      filter: brightness(0) invert(1);
+    }
+    .login-section {
+      flex: 1 1 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0 2rem;
+      background: #fff;
+    }
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+      padding: 2.5rem 2rem 2rem 2rem;
+    }
+    .form-label {
+      float: right;
+    }
+    .forgot-link {
+      color: #2476ff;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    @media (max-width: 900px) {
+      .split-container {
+        flex-direction: column;
+      }
+      .brand-section, .login-section {
+        flex: unset;
+        min-height: 320px;
+        padding: 2rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>s
+  <div class="split-container">
+    <!-- Left: Branding -->
+    <div class="brand-section">
+      <div class="brand-logo">Parkly:)</div>
+      <div class="brand-title">משימת בדיקות לתפקיד QA</div>
+      <div class="brand-desc">
+        לתשלום מהיר ונוח עבור שירותי חניה בחניונים גרסת בדיקות
+      </div>
+    </div>
+    <!-- Right: Login Form -->
+    <div class="login-section">
+      <div class="login-card">
+        <h3 class="mb-4 text-center" style="color:#2476ff;font-weight:bold;">כניסה <span style="color:#222;font-weight:normal;">לחשבון שלי</span></h3>
+        <form method="post">
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            <label for="username" class="form-label">שם משתמש</label>
+            {{ form.username(class="form-control", placeholder="שם משתמש") }}
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">סיסמה</label>
+            <div class="input-group">
+              {{ form.password(class="form-control", placeholder="סיסמה", id="password") }}
+              <button class="btn btn-outline-secondary" type="button" id="togglePassword" tabindex="-1"></button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary w-100 mb-2">כניסה</button>
+        </form>
+        <div class="text-center mt-3">
+          שכחת שם משתמש או סיסמה? <a class="forgot-link" href="https://cataas.com/cat">אפשר לאפס כאן</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Bootstrap JS (for tabs) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Password visibility toggle -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggleBtn = document.getElementById('togglePassword');
+      const pwdInput = document.getElementById('password');
+      if (toggleBtn && pwdInput) {
+        toggleBtn.addEventListener('click', function() {
+          const type = pwdInput.type === 'password' ? 'text' : 'password';
+          pwdInput.type = type;
+          this.querySelector('span').classList.toggle('bi-eye');
+          this.querySelector('span').classList.toggle('bi-eye-slash');
+        });
+      }
+    });
+  </script>
+</body>
+</html> 

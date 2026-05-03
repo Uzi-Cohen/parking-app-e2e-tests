@@ -1,0 +1,14 @@
+{
+  "name": "pango-qa",
+  "version": "1.0.0",
+  "description": "Playwright E2E test suite for Pango parking app",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.0.0"
+  }
+}

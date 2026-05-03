@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  body, .dashboard-bg {
+    background: #f7f8fa !important;
+  }
+  .dashboard-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 2px 12px rgba(36, 118, 255, 0.06);
+    padding: 2rem 2.5rem 2.5rem 2.5rem;
+    margin-bottom: 2rem;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .dashboard-header {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2476ff;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .form-label, .table th {
+    color: #2476ff;
+    font-weight: 600;
+  }
+  .btn-primary, .btn-success {
+    background: #2476ff !important;
+    border: none;
+  }
+  .btn-danger {
+    background: #ff7043 !important;
+    border: none;
+  }
+  .table {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(36, 118, 255, 0.04);
+  }
+  .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f7f8fa;
+  }
+  .alert {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 12px;
+    border-right: 6px solid #2476ff;
+  }
+</style>
+<div class="dashboard-bg" style="min-height:100vh;">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      {% if msg == 'active_parking_limit' %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" id="active-parking-alert">
+          יש יותר מ-3 חניות פעילות!
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <audio id="parking-sound" src="{{ url_for('static', filename='cashier-quotka-chingquot-sound-effect-129698.mp3') }}" autoplay></audio>
+        <script>
+          document.getElementById('parking-sound').play();
+        </script>
+      {% else %}
+        <div class="alert alert-{{ 'warning' if cat == 'warning' else cat }} alert-dismissible fade show" role="alert">
+          {{ msg }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endwith %}
+  <div class="dashboard-card">
+    <div class="dashboard-header">חניות פעילות נוכחיות</div>
+    <form method="post" action="{{ url_for('start_parking') }}" enctype="multipart/form-data">
+      {{ parking_form.hidden_tag() }}
+      <div class="mb-3">
+        <label class="form-label">{{ parking_form.car_plate.label }}</label>
+        {{ parking_form.car_plate(class="form-control", id="car_plate", maxlength="8", pattern="[0-9]{8}", title="Please enter exactly 8 digits") }}
+        <div class="form-text" id="plate-help">Enter exactly 8 digits (0-9) for the license plate</div>
+        <div class="invalid-feedback" id="plate-error"></div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">{{ parking_form.vehicle_type_id.label }}</label>
+        {{ parking_form.vehicle_type_id(class="form-control") }}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">{{ parking_form.slot.label }}</label>
+        {{ parking_form.slot(class="form-control") }}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">{{ parking_form.image.label }}</label>
+        {{ parking_form.image(class="form-control") }}
+      </div>
+      {{ parking_form.submit(class="btn btn-primary") }}
+    </form>
+    <hr>
+    <div class="table-responsive">
+      <table class="table table-striped mt-4">
+        <thead>
+          <tr>
+            <th>מספר רכב</th>
+            <th>מספר חניה</th>
+            <th>שעת התחלה</th>
+            <th>פעולה</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in sessions %}
+          <tr>
+            <td>{{ s.car_plate }}</td>
+            <td>{{ s.slot }}</td>
+            <td>{{ s.start_time }}</td>
+            <td>
+              <form method="post" action="{{ url_for('end_parking', session_id=s.id) }}">
+                <button type="submit" class="btn btn-danger btn-sm">סיים</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const carPlateInput = document.getElementById('car_plate');
+    const plateHelp = document.getElementById('plate-help');
+    const plateError = document.getElementById('plate-error');
+    const form = document.querySelector('form');
+
+    // Real-time validation
+    carPlateInput.addEventListener('input', function() {
+        const value = this.value;
+        
+        // Remove any non-digit characters
+        const cleanValue = value.replace(/[^0-9]/g, '');
+        if (value !== cleanValue) {
+            this.value = cleanValue;
+        }
+        
+        // Validation logic
+        if (value.length === 0) {
+            plateHelp.style.display = 'block';
+            plateError.style.display = 'none';
+            this.classList.remove('is-valid', 'is-invalid');
+        } else if (value.length === 8 && /^[0-9]{8}$/.test(value)) {
+            // Check for invalid patterns
+            if (value === '00000000') {
+                showError('Invalid license plate number');
+            } else if (new Set(value).size === 1) {
+                showError('License plate cannot have all identical digits');
+            } else if (isSequential(value)) {
+                showError('License plate cannot be a sequential pattern');
+            } else if (['12345678', '87654321', '11111111', '99999999'].includes(value)) {
+                showError('This appears to be a test license plate');
+            } else {
+                showSuccess();
+            }
+        } else {
+            showError('License plate must be exactly 8 digits');
+        }
+    });
+
+    // Form submission validation
+    form.addEventListener('submit', function(e) {
+        const value = carPlateInput.value;
+        
+        if (value.length !== 8 || !/^[0-9]{8}$/.test(value)) {
+            e.preventDefault();
+            showError('Please enter a valid 8-digit license plate');
+            carPlateInput.focus();
+            return false;
+        }
+        
+        if (value === '00000000') {
+            e.preventDefault();
+            showError('Invalid license plate number');
+            carPlateInput.focus();
+            return false;
+        }
+        
+        if (new Set(value).size === 1) {
+            e.preventDefault();
+            showError('License plate cannot have all identical digits');
+            carPlateInput.focus();
+            return false;
+        }
+        
+        if (isSequential(value)) {
+            e.preventDefault();
+            showError('License plate cannot be a sequential pattern');
+            carPlateInput.focus();
+            return false;
+        }
+        
+        if (['12345678', '87654321', '11111111', '99999999'].includes(value)) {
+            e.preventDefault();
+            showError('This appears to be a test license plate');
+            carPlateInput.focus();
+            return false;
+        }
+    });
+
+    function showError(message) {
+        plateHelp.style.display = 'none';
+        plateError.style.display = 'block';
+        plateError.textContent = message;
+        carPlateInput.classList.remove('is-valid');
+        carPlateInput.classList.add('is-invalid');
+    }
+
+    function showSuccess() {
+        plateHelp.style.display = 'none';
+        plateError.style.display = 'none';
+        carPlateInput.classList.remove('is-invalid');
+        carPlateInput.classList.add('is-valid');
+    }
+
+    function isSequential(plate) {
+        const digits = plate.split('').map(d => parseInt(d));
+        
+        // Check ascending sequence
+        const ascending = digits.every((digit, index) => 
+            index === 0 || digit === digits[index - 1] + 1
+        );
+        
+        // Check descending sequence
+        const descending = digits.every((digit, index) => 
+            index === 0 || digit === digits[index - 1] - 1
+        );
+        
+        return ascending || descending;
+    }
+});
+</script>
+{% endblock %} 

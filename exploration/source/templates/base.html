@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Parking{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <style>
+    body {
+      background: #FFD34E !important;
+      min-height: 100vh;
+    }
+    .main-card {
+      width: 100%;
+      max-width: 1200px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      padding: 2.5rem 2rem 2rem 2rem;
+      position: relative;
+    }
+    .minimal-navbar {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+    .minimal-navbar a {
+      color: #222;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .minimal-navbar a:hover {
+      color: #198754;
+      text-decoration: underline;
+    }
+    @media (max-width: 1300px) {
+      .main-card { max-width: 98vw; padding: 1.2rem 0.5rem; }
+    }
+    @media (max-width: 800px) {
+      .main-card { max-width: 100vw; padding: 0.5rem 0.2rem; }
+      .minimal-navbar { gap: 0.7rem; font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-card">
+    <nav class="minimal-navbar mb-4">
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('history') }}">History</a>
+      <a href="{{ url_for('users') }}">Users</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+    {% block content %}{% endblock %}
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
