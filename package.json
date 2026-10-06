@@ -1,7 +1,7 @@
 {
-  "name": "pango-qa",
+  "name": "parking-app-e2e",
   "version": "1.0.0",
-  "description": "Playwright E2E test suite for Pango parking app",
+  "description": "Playwright E2E test suite for a parking management web app",
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed"

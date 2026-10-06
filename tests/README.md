@@ -1,4 +1,4 @@
-# Pango QA — Playwright E2E Test Suite
+# Parking App — Playwright E2E Test Suite
 
 ## Prerequisites
 
