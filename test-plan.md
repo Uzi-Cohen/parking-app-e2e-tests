@@ -2,7 +2,7 @@
 
 ## Application Under Test
 
-Pango Parking Manager (v3.1.0, doringber/parking-manager:3.1.0) is a Flask-based web application for managing vehicle parking sessions and billing. Users authenticate with credentials, start/end parking sessions by license plate and slot assignment, and review billing history. The application integrates with external billing and slot services. We accessed the live container at http://localhost:5000 with credentials admin/password and had access to the extracted Flask source code (app.py, forms.py, models.py, billing_service.py).
+The Parking Manager app (v3.1.0, doringber/parking-manager:3.1.0) is a Flask-based web application for managing vehicle parking sessions and billing. Users authenticate with credentials, start/end parking sessions by license plate and slot assignment, and review billing history. The application integrates with external billing and slot services. We accessed the live container at http://localhost:5000 with credentials admin/password and had access to the extracted Flask source code (app.py, forms.py, models.py, billing_service.py).
 
 ## Approach & Prioritization
 

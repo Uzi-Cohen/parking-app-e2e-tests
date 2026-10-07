@@ -43,7 +43,7 @@
 
 2. **test.fail() is a code comment.** The Playwright suite documents the double-billing bug clearly, but `test.fail()` is a code-level annotation, not a runtime assertion. A code reviewer must read the test file and the comment to understand the bug. Ideally, the app would be fixed and the annotation removed, so the test becomes a permanent regression check. Until then, the test is documentation + evidence, not a typical automated check.
 
-3. **This suite is tuned to v3.1.0's current behavior.** If Pango fixes BUG-B (adds the `if session.end_time is not None` guard), the `bug-double-end.spec.ts` test will start passing where it currently fails. That's the intended outcome (the bug-demo test becomes obsolete when fixed), but it means the suite is not forward-compatible. Version upgrades may require re-tuning.
+3. **This suite is tuned to v3.1.0's current behavior.** If the app fixes BUG-B (adds the `if session.end_time is not None` guard), the `bug-double-end.spec.ts` test will start passing where it currently fails. That's the intended outcome (the bug-demo test becomes obsolete when fixed), but it means the suite is not forward-compatible. Version upgrades may require re-tuning.
 
 4. **Test data isolation does not check consistency.** We use unique per-test data (different license plates) to avoid collisions, but we do not assert that the database is clean. If a previous test crashed and left orphaned sessions, a new test might inherit stale state. In practice, with Playwright's isolation and SQLite's simplicity, this is not an issue for assignment-scope testing. Production would require deterministic state cleanup (factory resets, data marts, or CI-per-branch databases).
 
